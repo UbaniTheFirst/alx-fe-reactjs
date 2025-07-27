@@ -1,16 +1,31 @@
-import React from 'react';
-import { useRecipeStore } from './recipeStore';
+import { create } from 'zustand';
 
-const SearchBar = () => {
-    const setSearchTerm = useRecipeStore(state => state.setSearchTerm);
+export const useRecipeStore = create((set, get) => ({
+    recipes: [
+        {
+            id: '1',
+            title: 'Jollof Rice',
+            description: 'A West African spicy rice dish.'
+        },
+        {
+            id: '2',
+            title: 'Egusi Soup',
+            description: 'A Nigerian melon seed soup.'
+        },
+        {
+            id: '3',
+            title: 'Suya',
+            description: 'Spicy meat skewer popular in Nigeria.'
+        }
+    ],
+    searchTerm: '',
 
-    return (
-        <input
-            type="text"
-            placeholder="Search recipes..."
-            onChange={(e) => setSearchTerm(e.target.value)}
-        />
-    );
-};
+    setSearchTerm: (term) => set({ searchTerm: term }),
 
-export default SearchBar;
+    filteredRecipes: () => {
+        const term = get().searchTerm.toLowerCase();
+        return get().recipes.filter(recipe =>
+            recipe.title.toLowerCase().includes(term)
+        );
+    }
+}));
